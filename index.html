@@ -3,152 +3,270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page_title">Pollos Don Juan - Control de Producción</title>
+    <title id="page_title">Pollos Don Juan - Panel de Control Avícola</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     
     <style>
-        /* --- ESTILOS BASE --- */
+        /* --- ESTILOS BASE (Futurista / Dark Mode) --- */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
+            background-color: #1a1a2e; /* Azul Oscuro Profundo */
+            color: #e0f7fa; /* Cian Claro para el texto */
+            transition: background-color 0.5s;
+        }
+        /* Efecto de Fondo (Simula una rejilla o circuito) */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 1px, #0f0f1b 1px, #0f0f1b 20px),
+                              repeating-linear-gradient(90deg, transparent, transparent 1px, #0f0f1b 1px, #0f0f1b 20px);
+            opacity: 0.3;
+            z-index: -1;
         }
         header {
             text-align: center;
-            padding: 10px;
-            background-color: #388e3c; /* Verde Avícola */
-            color: white;
-            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #162447; /* Azul Oscuro Medio */
+            color: #4CAF50; /* Verde Neón */
+            margin-bottom: 30px;
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.5); /* Resplandor Neón */
+            border-bottom: 2px solid #4CAF50;
+        }
+        header h1 {
+            text-shadow: 0 0 5px #4CAF50, 0 0 10px #4CAF50;
         }
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: rgba(22, 36, 71, 0.7); /* Base semi-transparente */
+            backdrop-filter: blur(5px); /* Efecto cristal */
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 188, 212, 0.3), 0 0 40px rgba(0, 188, 212, 0.1); /* Resplandor Cian */
+            border: 1px solid rgba(0, 188, 212, 0.5);
             margin-bottom: 20px;
         }
         
-        /* --- ESTILOS DEL MENÚ/NAVEGACIÓN --- */
+        /* --- ESTILOS DEL MENÚ/NAVEGACIÓN (Tabs de Consola) --- */
         .navbar {
             display: flex;
-            justify-content: center;
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
-            margin-bottom: 20px;
-            padding: 0 20px;
+            justify-content: flex-start;
+            background-color: transparent;
+            border-bottom: 2px solid #3f51b5; 
+            margin-bottom: 30px;
+            padding: 0 5px;
         }
         .nav-button {
             padding: 15px 20px;
             border: none;
-            background: none;
+            background: #162447;
             cursor: pointer;
             font-weight: bold;
-            color: #495057;
-            transition: background-color 0.3s, color 0.3s;
-            flex-grow: 1; 
+            color: #e0f7fa;
+            transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+            flex-grow: 0; 
             max-width: 25%;
+            margin-right: 5px;
+            border-radius: 6px 6px 0 0;
+            border: 1px solid transparent;
+            border-bottom: none;
         }
         .nav-button:hover {
-            background-color: #e9ecef;
+            background-color: #2c3e50;
+            box-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
         }
         .nav-button.active {
-            color: #1e88e5; 
-            border-bottom: 3px solid #1e88e5;
-            background-color: white;
+            color: #00bcd4; /* Cian Neón Activo */
+            background-color: #1a1a2e;
+            border: 1px solid #00bcd4;
+            border-bottom: 1px solid #1a1a2e; 
+            box-shadow: 0 -2px 10px rgba(0, 188, 212, 0.8);
         }
         .content-section {
-            display: none; 
-            padding: 0 20px 20px 20px;
+            padding: 20px 0 0 0; 
         }
-        .content-section.active {
-            display: block;
-        }
+
         /* --- Estilos de Componentes --- */
         h2 {
-            color: #1e88e5; 
-            border-bottom: 2px solid #ccc;
-            padding-bottom: 10px;
+            color: #FFEB3B; /* Amarillo Neón para títulos */
+            border-left: 5px solid #FFEB3B;
+            padding-left: 10px;
+            padding-bottom: 5px;
+            margin-bottom: 25px;
+            text-shadow: 0 0 3px rgba(255, 235, 59, 0.7);
         }
         .input-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             font-weight: bold;
+            color: #e0f7fa;
         }
         .input-group input, .input-group select {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             margin-bottom: 15px;
-            border: 1px solid #ccc;
+            border: 1px solid #3f51b5;
             border-radius: 4px;
             box-sizing: border-box;
+            background-color: #1a1a2e; 
+            color: #e0f7fa;
+            box-shadow: inset 0 0 5px rgba(63, 81, 181, 0.5);
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
+        .input-group input:focus, .input-group select:focus {
+            border-color: #00bcd4;
+            box-shadow: 0 0 8px rgba(0, 188, 212, 0.8);
+            outline: none;
+        }
+        
+        /* Estilos de Tabla */
         #galpones-config-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 15px;
         }
         #galpones-config-table th, #galpones-config-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
+            border: 1px solid #3f51b5;
+            padding: 10px;
             text-align: left;
+            background-color: #162447;
         }
         #galpones-config-table th {
-            background-color: #f2f2f2;
-        }
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            flex-wrap: wrap; 
-        }
-        button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        #btn-calcular {
-            background-color: #fbc02d;
-            color: #333;
-        }
-        #btn-guardar {
-            background-color: #007bff;
-            color: white;
-            display: none;
-        }
-        #btn-config-galpones, #btn-registrar-mortalidad {
-            background-color: #5cb85c;
-            color: white;
-            width: 100%;
-            margin-top: 10px;
-        }
-        #btn-reporte-completo {
             background-color: #3f51b5;
             color: white;
         }
-        #btn-config-galpones:hover, #btn-registrar-mortalidad:hover {
-            background-color: #4cae4c;
+        #galpones-config-table td input {
+            border: none;
+            background: transparent;
+            padding: 0;
+            margin: 0;
+            box-shadow: none;
+            text-align: right;
+            color: #FFEB3B; /* Texto de input en amarillo */
         }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap; 
+        }
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        /* Botones con Resplandor Neón */
+        #btn-calcular {
+            background-color: #FFEB3B; /* Amarillo */
+            color: #1a1a2e;
+        }
+        #btn-calcular:hover {
+            box-shadow: 0 0 15px #FFEB3B;
+        }
+        #btn-guardar {
+            background-color: #00bcd4; /* Cian */
+            color: #1a1a2e;
+            display: none;
+        }
+        #btn-guardar:hover {
+            box-shadow: 0 0 15px #00bcd4;
+        }
+        #btn-config-galpones, #btn-registrar-mortalidad {
+            background-color: #4CAF50; /* Verde Neón */
+            color: #1a1a2e;
+            width: 100%;
+            margin-top: 10px;
+        }
+        #btn-config-galpones:hover, #btn-registrar-mortalidad:hover {
+            background-color: #66BB6A;
+            box-shadow: 0 0 15px #4CAF50;
+        }
+        #btn-reporte-completo {
+            background-color: #3f51b5; /* Azul oscuro */
+            color: white;
+        }
+        #btn-reporte-completo:hover {
+            box-shadow: 0 0 15px #3f51b5;
+        }
+        #btn-guardar-mortalidad {
+            background-color: #f44336 !important; /* Rojo */
+            color: white !important;
+        }
+        #btn-guardar-mortalidad:hover {
+            box-shadow: 0 0 15px #f44336;
+        }
+        #btn-balanceado-calcular {
+            background-color: #FF9800;
+            color: black;
+        }
+        #btn-balanceado-calcular:hover {
+            box-shadow: 0 0 15px #FF9800;
+        }
+
+        /* RESULTADO BLOCKS */
         #resultados, #resultados_mortalidad {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #e8f5e9;
-            border: 1px solid #a5d6a7;
-            border-radius: 4px;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: rgba(76, 175, 80, 0.1); /* Fondo Transparente Verde */
+            border: 1px solid #4CAF50;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5); /* Resplandor de Estado */
+        }
+        #resultados h3, #resultados_mortalidad h3 {
+            color: #FFEB3B; 
+            border-left: 3px solid #FFEB3B;
+            padding-left: 5px;
+            margin-top: 0;
+        }
+        .resultado-item {
+            padding: 5px 0;
+            border-bottom: 1px dashed #3f51b5;
+        }
+        .resultado-item:last-child {
+            border-bottom: none;
         }
         .resultado-item span {
             font-weight: bold;
+            color: #00bcd4;
+        }
+        /* Estilos de Estado */
+        #config-status {
+            margin-top: 15px;
+            font-weight: bold;
+            padding: 8px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .status-error {
+            color: #f44336 !important;
+            border: 1px solid #f44336;
+            box-shadow: 0 0 8px rgba(244, 67, 54, 0.5);
+        }
+        .status-success {
+            color: #4CAF50 !important;
+            border: 1px solid #4CAF50;
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
         }
 
         /* --- Estilos para Dispositivos Móviles (Media Query) --- */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
             .navbar {
                 flex-wrap: wrap; 
             }
@@ -156,46 +274,24 @@
                 flex-grow: 1; 
                 max-width: 50%;
                 padding: 10px 5px;
-                font-size: 0.9em;
-            }
-            .content {
-                padding: 10px;
+                font-size: 0.8em;
+                margin: 2px;
             }
             .btn-group {
                 flex-direction: column; 
-                gap: 8px;
+                gap: 10px;
             }
-            button, .input-group input, .input-group select {
+            button {
                 width: 100% !important; 
-                box-sizing: border-box;
-            }
-            #galpones-config-table, #galpones-config-table thead, #galpones-config-table tbody, #galpones-config-table th, #galpones-config-table td, #galpones-config-table tr {
-                display: block; 
-                width: 100%;
             }
             #galpones-config-table tr {
-                margin-bottom: 10px;
-                border: 1px solid #ccc;
+                border: 1px solid #3f51b5;
             }
             #galpones-config-table td {
-                text-align: right;
-                padding-left: 50%;
-                position: relative;
+                background-color: #162447;
             }
             #galpones-config-table td::before {
-                content: attr(data-label); 
-                position: absolute;
-                left: 0;
-                width: 50%;
-                padding-left: 10px;
-                font-weight: bold;
-                text-align: left;
-            }
-            #galpones-config-table input {
-                margin-bottom: 0; 
-                border: none;
-                padding: 0;
-                text-align: right;
+                color: #00bcd4;
             }
         }
     </style>
@@ -203,30 +299,30 @@
 <body>
 
     <header>
-        <h1 id="farm_title">🐔 Granja Avícola Pollos Don Juan 📊</h1>
-        <p>Control de Producción, Crecimiento y Mortalidad</p>
+        <h1 id="farm_title">🤖 Granja Avícola Pollos Don Juan - CONSOLE 📊</h1>
+        <p>Sistema de Monitoreo y Análisis de Producción</p>
     </header>
 
     <div class="navbar container">
-        <button class="nav-button active" onclick="showSection('config-section', this)">⚙️ Configuración</button>
-        <button class="nav-button" onclick="showSection('peso-section', this)">⚖️ Peso Semanal</button>
-        <button class="nav-button" onclick="showSection('mortalidad-section', this)">💀 Mortalidad</button>
-        <button class="nav-button" onclick="showSection('balanceado-section', this)">🍚 Consumo Balanceado</button>
-        <button class="nav-button" onclick="showSection('reporte-section', this)">📋 Reporte</button>
+        <button class="nav-button active" onclick="showSection('config-section', this)">🛠️ Configuración</button>
+        <button class="nav-button" onclick="showSection('peso-section', this)">📈 Peso Semanal</button>
+        <button class="nav-button" onclick="showSection('mortalidad-section', this)">🚨 Mortalidad</button>
+        <button class="nav-button" onclick="showSection('balanceado-section', this)">🔋 Consumo Balanceado</button>
+        <button class="nav-button" onclick="showSection('reporte-section', this)">🌐 Reporte Global</button>
     </div>
     
     <div class="container">
         <div id="config-section" class="content-section active">
-            <h2>1. Configuración Inicial de Lotes y Granja</h2>
-            <p><strong style="color: red;">⚠️ Los datos se guardarán automáticamente en tu navegador.</strong></p>
+            <h2>> ACCESO 01: Parámetros de Lote e Infraestructura</h2>
+            <p><strong style="color: #4CAF50;">[STATUS: ONLINE]</strong> El sistema cargará y guardará los datos en tu navegador.</p>
 
             <div class="input-group">
-                <label for="farm_name">Nombre de la Granja:</label>
+                <label for="farm_name">Nombre de la Granja / Módulo:</label>
                 <input type="text" id="farm_name" value="Granja Avícola Pollos Don Juan" required>
             </div>
             
             <div class="input-group">
-                <label for="num_galpones">Cantidad de Galpones en la Granja:</label>
+                <label for="num_galpones">Cantidad de Unidades (Galpones) en la Granja:</label>
                 <input type="number" id="num_galpones" min="1" value="1" required oninput="generarCamposGalpones()">
             </div>
 
@@ -234,8 +330,8 @@
                 <table id="galpones-config-table">
                     <thead>
                         <tr>
-                            <th>Galpón (ID)</th>
-                            <th>Cantidad Inicial de Aves</th>
+                            <th>Unidad (ID)</th>
+                            <th>Capacidad Inicial (Aves)</th>
                         </tr>
                     </thead>
                     <tbody id="galpones-tbody">
@@ -248,25 +344,25 @@
             </div>
 
             <div class="btn-group" style="flex-direction: column; gap: 10px;">
-                <button id="btn-config-galpones" onclick="guardarConfiguracion()">Guardar Configuración de Lotes</button>
+                <button id="btn-config-galpones" onclick="guardarConfiguracion()">ACTIVAR & GUARDAR PARÁMETROS</button>
             </div>
 
-            <p id="config-status" style="margin-top: 10px; color: red; font-weight: bold;">⚠️ Ingrese y guarde la configuración para comenzar.</p>
+            <div id="config-status" class="status-error" style="margin-top: 10px;">⚠️ INGRESO REQUERIDO: Configuración pendiente.</div>
         </div>
 
         <div id="peso-section" class="content-section">
-            <h2>2. Control de Peso Semanal</h2>
-            <p>Seleccione el galpón configurado y registre los datos de pesaje para el control de crecimiento.</p>
+            <h2>> ACCESO 02: Monitoreo de Crecimiento (Peso)</h2>
+            <p>Registro de datos de pesaje y contraste con métricas estándar.</p>
             
             <div class="input-group">
-                <label for="galpon">Seleccionar Galpón:</label>
+                <label for="galpon">Seleccionar Unidad (Galpón):</label>
                 <select id="galpon" disabled>
                     <option value="" disabled selected>Primero configure los galpones (Sección 1)</option>
                 </select>
             </div>
 
             <div class="input-group">
-                <label for="semana">Semana de Vida:</label>
+                <label for="semana">Semana de Vida (Ciclo Avícola):</label>
                 <select id="semana">
                     <option value="1">Semana 1 (7 Días)</option>
                     <option value="2">Semana 2 (14 Días)</option>
@@ -278,7 +374,7 @@
             </div>
 
             <div class="input-group">
-                <label for="aves_pesadas">Cantidad de Aves Pesadas (Muestra):</label>
+                <label for="aves_pesadas">N° de Aves Pesadas (Muestra):</label>
                 <input type="number" id="aves_pesadas" min="1" required placeholder="Ej: 100">
             </div>
 
@@ -288,37 +384,37 @@
             </div>
 
             <div class="btn-group">
-                <button id="btn-calcular" onclick="calcularCrecimiento()">Calcular Peso y Porcentaje</button>
-                <button id="btn-guardar" onclick="generarPDFPeso()">📥 Guardar Reporte de Peso (PDF)</button>
+                <button id="btn-calcular" onclick="calcularCrecimiento()">EJECUTAR CÁLCULO DE PESO</button>
+                <button id="btn-guardar" onclick="generarPDFPeso()">📥 GENERAR REPORTE PDF (PESO)</button>
             </div>
 
             <div id="resultados" style="display: none;">
-                <h3>Resultados del Pesaje</h3>
-                <div class="resultado-item">Galpón Seleccionado: <span id="res_galpon"></span></div>
-                <div class="resultado-item">Aves Vivas (Actual): <span id="res_aves_actuales"></span></div>
-                <div class="resultado-item">Semana de Vida: <span id="res_semana"></span></div>
+                <h3>[OUTPUT] Análisis de Crecimiento</h3>
+                <div class="resultado-item">Unidad Seleccionada: <span id="res_galpon"></span></div>
+                <div class="resultado-item">Inventario Actual: <span id="res_aves_actuales"></span> aves</div>
+                <div class="resultado-item">Semana de Ciclo: <span id="res_semana"></span></div>
                 <hr>
-                <div class="resultado-item">Peso Promedio Real: <span id="promedio_real"></span> gramos</div>
-                <div class="resultado-item">Diferencia con Estándar: <span id="diferencia_gramos"></span> gramos</div>
+                <div class="resultado-item">Peso Promedio Real (Gramos): <span id="promedio_real"></span></div>
+                <div class="resultado-item">Diferencia con Estándar (Gramos): <span id="diferencia_gramos"></span></div>
                 <div class="resultado-item">
-                    <p><strong>Porcentaje de Subida/Baja de Peso:</strong> <span id="porcentaje_subida"></span></p>
+                    <p><strong>Desempeño vs. Estándar:</strong> <span id="porcentaje_subida"></span></p>
                 </div>
             </div>
         </div>
 
         <div id="mortalidad-section" class="content-section">
-            <h2>3. Control de Mortalidad Semanal</h2>
-            <p>Registre las pérdidas de la semana para actualizar el inventario y calcular el porcentaje de mortalidad.</p>
+            <h2>> ACCESO 03: Registro de Pérdidas y Mortalidad</h2>
+            <p>Monitoreo de bajas para actualizar el inventario y métricas de riesgo.</p>
 
             <div class="input-group">
-                <label for="galpon_mortalidad">Seleccionar Galpón:</label>
+                <label for="galpon_mortalidad">Seleccionar Unidad (Galpón):</label>
                 <select id="galpon_mortalidad" disabled>
                     <option value="" disabled selected>Primero configure los galpones (Sección 1)</option>
                 </select>
             </div>
 
             <div class="input-group">
-                <label for="semana_mortalidad">Semana a Registrar (Semana de Vida):</label>
+                <label for="semana_mortalidad">Semana de Ciclo (Registro de Pérdida):</label>
                 <select id="semana_mortalidad">
                     <option value="1">Semana 1</option>
                     <option value="2">Semana 2</option>
@@ -330,34 +426,34 @@
             </div>
 
             <div class="input-group">
-                <label for="mortalidad_semanal">Aves Muertas en la Semana:</label>
+                <label for="mortalidad_semanal">Aves Muertas en la Semana (Unidades):</label>
                 <input type="number" id="mortalidad_semanal" min="0" value="0" required placeholder="Ej: 50">
             </div>
 
             <div class="btn-group">
-                <button id="btn-registrar-mortalidad" onclick="registrarMortalidad()">Registrar Mortalidad</button>
-                <button id="btn-guardar-mortalidad" onclick="generarPDFMortalidad()" style="display: none; background-color: #dc3545; color: white;">📥 Guardar Reporte de Mortalidad (PDF)</button>
+                <button id="btn-registrar-mortalidad" onclick="registrarMortalidad()">REGISTRAR PÉRDIDAS & ACTUALIZAR INVENTARIO</button>
+                <button id="btn-guardar-mortalidad" onclick="generarPDFMortalidad()" style="display: none;">📥 GENERAR REPORTE PDF (MORTALIDAD)</button>
             </div>
 
             <div id="resultados_mortalidad" style="display: none;">
-                <h3>Resultados de Mortalidad</h3>
-                <div class="resultado-item">Galpón: <span id="res_mort_galpon"></span></div>
-                <div class="resultado-item">Aves Iniciales: <span id="res_mort_inicial"></span></div>
+                <h3>[OUTPUT] Análisis de Riesgo (Mortalidad)</h3>
+                <div class="resultado-item">Unidad: <span id="res_mort_galpon"></span></div>
+                <div class="resultado-item">Aves al Inicio de Lote: <span id="res_mort_inicial"></span></div>
                 <hr>
-                <div class="resultado-item">Pérdidas de la Semana: <span id="res_mort_semana_num"></span></div>
-                <div class="resultado-item">Mortalidad Semanal: <span id="res_mort_porc_semanal" style="color: red;"></span></div>
-                <div class="resultado-item">Mortalidad Acumulada (Total): <span id="res_mort_porc_acumulado" style="color: red;"></span></div>
+                <div class="resultado-item">Pérdidas Semanales: <span id="res_mort_semana_num"></span></div>
+                <div class="resultado-item">Mortalidad Semanal: <span id="res_mort_porc_semanal" style="color: #f44336;"></span></div>
+                <div class="resultado-item">Mortalidad Acumulada (Total): <span id="res_mort_porc_acumulado" style="color: #f44336;"></span></div>
                 <hr>
-                <div class="resultado-item"><strong>Aves Vivas Actuales:</strong> <span id="res_mort_actual" style="color: green;"></span></div>
+                <div class="resultado-item"><strong>INVENTARIO VIVO ACTUAL:</strong> <span id="res_mort_actual" style="color: #4CAF50;"></span> unidades</div>
             </div>
         </div>
 
         <div id="balanceado-section" class="content-section">
-            <h2>4. Control de Consumo de Balanceado</h2>
-            <p>Aquí registrarás el consumo diario o semanal de alimento.</p>
+            <h2>> ACCESO 04: Logística de Alimentación (Balanceado)</h2>
+            <p>Registro de consumo de alimento para cálculo de FCR (Conversión Alimenticia).</p>
             
             <div class="input-group">
-                <label for="galpon_balanceado">Seleccionar Galpón:</label>
+                <label for="galpon_balanceado">Seleccionar Unidad (Galpón):</label>
                 <select id="galpon_balanceado" disabled>
                     <option value="" disabled selected>Primero configure los galpones (Sección 1)</option>
                 </select>
@@ -369,15 +465,16 @@
             </div>
             
             <div class="btn-group">
-                <button style="background-color: #ffc107; color: black;">Calcular FCR (Conversión Alimenticia)</button> 
+                <button id="btn-balanceado-calcular" style="background-color: #FF9800; color: black;">CALCULAR FCR (MÉTRICA PENDIENTE)</button> 
             </div>
+            <p style="color: #FFEB3B; margin-top: 20px;">[NOTA]: La funcionalidad de FCR está pendiente de desarrollo en esta versión de la consola.</p>
         </div>
 
         <div id="reporte-section" class="content-section">
-            <h2>5. Reportes de Granja</h2>
-            <p>Genere un reporte completo con el resumen del estado actual de todos los galpones, incluyendo aves vivas y mortalidad acumulada.</p>
+            <h2>> ACCESO 05: Reporte Global y Estadísticas</h2>
+            <p>Generación de un reporte resumido del estado actual de toda la operación.</p>
             <div class="btn-group" style="flex-direction: column; gap: 10px;">
-                <button id="btn-reporte-completo" onclick="generarReporteCompletoPDF()">📋 Generar Reporte COMPLETO (PDF)</button>
+                <button id="btn-reporte-completo" onclick="generarReporteCompletoPDF()">🌐 GENERAR REPORTE COMPLETO (PDF) </button>
             </div>
         </div>
 
@@ -428,7 +525,7 @@
                 select.innerHTML = ''; 
                 const defaultOption = document.createElement('option');
                 defaultOption.value = "";
-                defaultOption.textContent = "Seleccione un galpón";
+                defaultOption.textContent = "Seleccione una unidad";
                 defaultOption.disabled = true;
                 defaultOption.selected = true;
                 select.appendChild(defaultOption);
@@ -437,7 +534,7 @@
                     const avesActuales = galponesData[galponID].current.toLocaleString();
                     const option = document.createElement('option');
                     option.value = galponID;
-                    option.textContent = `${galponID} (Actualmente: ${avesActuales} aves)`;
+                    option.textContent = `${galponID} (Inventario: ${avesActuales} aves)`;
                     select.appendChild(option);
                 }
                 select.disabled = false;
@@ -450,8 +547,8 @@
 
             if (savedFarmName) {
                 farmName = savedFarmName;
-                document.getElementById('farm_title').innerHTML = `🐔 ${farmName} 📊`;
-                document.getElementById('page_title').textContent = `${farmName} - Control de Producción`;
+                document.getElementById('farm_title').innerHTML = `🤖 ${farmName} - CONSOLE 📊`;
+                document.getElementById('page_title').textContent = `${farmName} - Panel de Control Avícola`;
                 document.getElementById('farm_name').value = farmName;
             }
 
@@ -463,22 +560,25 @@
 
                 const tbody = document.getElementById('galpones-tbody');
                 tbody.innerHTML = '';
+                let totalAves = 0;
 
                 for (const galponID in galponesData) {
                     const i = galponID.replace('G', '');
                     const initialAves = galponesData[galponID].initial;
                     const row = `
                         <tr>
-                            <td data-label="Galpón (ID)">Galpón ${i} (${galponID})</td>
-                            <td data-label="Aves Iniciales"><input type="number" min="1" class="input-aves" id="aves_${galponID}" placeholder="Ej: 20000" value="${initialAves}" required></td>
+                            <td data-label="Unidad (ID)">Galpón ${i} (${galponID})</td>
+                            <td data-label="Capacidad Inicial"><input type="number" min="1" class="input-aves" id="aves_${galponID}" placeholder="Ej: 20000" value="${initialAves}" required></td>
                         </tr>
                     `;
                     tbody.innerHTML += row;
+                    totalAves += initialAves;
                 }
 
-                const totalAves = Object.values(galponesData).reduce((sum, data) => sum + data.initial, 0);
-                document.getElementById('config-status').textContent = `✅ Configuración de ${farmName} cargada y guardada. Total de galpones: ${numGalpones}. Total de aves iniciales: ${totalAves.toLocaleString()}.`;
-                document.getElementById('config-status').style.color = 'green';
+                const statusElement = document.getElementById('config-status');
+                statusElement.textContent = `✅ [STATUS: OK] Configuración cargada. ${numGalpones} unidades configuradas. Total inicial: ${totalAves.toLocaleString()} aves.`;
+                statusElement.classList.remove('status-error');
+                statusElement.classList.add('status-success');
                 
                 actualizarSelectoresGalpones(); 
                 
@@ -490,7 +590,7 @@
         document.addEventListener('DOMContentLoaded', cargarDatos);
 
 
-        // --- FUNCIONES DE INTERFAZ Y LÓGICA (Mismas funciones) ---
+        // --- FUNCIONES DE INTERFAZ Y LÓGICA ---
 
         function generarCamposGalpones() {
             const numGalpones = parseInt(document.getElementById('num_galpones').value);
@@ -498,7 +598,7 @@
             tbody.innerHTML = '';
             
             if (numGalpones < 1 || isNaN(numGalpones)) {
-                tbody.innerHTML = '<tr><td colspan="2">Ingrese un número válido de galpones.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;">ERROR: Ingrese un número válido de galpones.</td></tr>';
                 return;
             }
 
@@ -506,8 +606,8 @@
                 const galponID = `G${i}`;
                 const row = `
                     <tr>
-                        <td data-label="Galpón (ID)">Galpón ${i} (${galponID})</td>
-                        <td data-label="Aves Iniciales"><input type="number" min="1" class="input-aves" id="aves_${galponID}" placeholder="Ej: 20000" required></td>
+                        <td data-label="Unidad (ID)">Galpón ${i} (${galponID})</td>
+                        <td data-label="Capacidad Inicial"><input type="number" min="1" class="input-aves" id="aves_${galponID}" placeholder="Ej: 20000" required></td>
                     </tr>
                 `;
                 tbody.innerHTML += row;
@@ -516,13 +616,15 @@
 
         function guardarConfiguracion() {
             const newFarmName = document.getElementById('farm_name').value.trim();
+            const statusElement = document.getElementById('config-status');
+
             if (!newFarmName) {
                 alert('Debe ingresar un nombre para la Granja.');
                 return;
             }
             farmName = newFarmName;
-            document.getElementById('farm_title').innerHTML = `🐔 ${farmName} 📊`;
-            document.getElementById('page_title').textContent = `${farmName} - Control de Producción`;
+            document.getElementById('farm_title').innerHTML = `🤖 ${farmName} - CONSOLE 📊`;
+            document.getElementById('page_title').textContent = `${farmName} - Panel de Control Avícola`;
 
 
             const inputsAves = document.querySelectorAll('.input-aves');
@@ -560,8 +662,9 @@
             });
 
             if (!todoValido) {
-                document.getElementById('config-status').textContent = '⚠️ ¡Error! Ingrese una cantidad de aves válida y mayor a cero para todos los galpones.';
-                document.getElementById('config-status').style.color = 'red';
+                statusElement.textContent = '⚠️ ¡Error! Ingrese una cantidad de aves válida y mayor a cero para todos los galpones.';
+                statusElement.classList.remove('status-success');
+                statusElement.classList.add('status-error');
                 return;
             }
 
@@ -569,8 +672,9 @@
             guardarDatosEnLocalStorage(); 
             actualizarSelectoresGalpones(); 
 
-            document.getElementById('config-status').textContent = `✅ Configuración de ${farmName} guardada. Total de galpones: ${Object.keys(galponesData).length}. Total de aves iniciales: ${totalAves.toLocaleString()}.`;
-            document.getElementById('config-status').style.color = 'green';
+            statusElement.textContent = `✅ [STATUS: OK] Configuración guardada. ${Object.keys(galponesData).length} unidades configuradas. Total inicial: ${totalAves.toLocaleString()} aves.`;
+            statusElement.classList.remove('status-error');
+            statusElement.classList.add('status-success');
         }
 
         function registrarMortalidad() {
@@ -579,7 +683,7 @@
             const mortalidad = parseInt(document.getElementById('mortalidad_semanal').value);
 
             if (!galpon || galponesData[galpon] === undefined) {
-                alert('Debe seleccionar y guardar la configuración de un galpón.');
+                alert('Debe seleccionar y guardar la configuración de una unidad (galpón).');
                 return;
             }
             if (isNaN(mortalidad) || mortalidad < 0) {
@@ -589,13 +693,15 @@
             
             const data = galponesData[galpon];
             
+            // Revertir el registro de la semana si existe, para recalcular
             const mortalidadPrevia = data.mortalidadHistory[semana] || 0;
             data.current += mortalidadPrevia;
             data.mortalidadAcumulada -= mortalidadPrevia;
 
             const avesAlInicioDeSemana = data.current; 
             if (mortalidad > avesAlInicioDeSemana) {
-                alert('ERROR: La mortalidad registrada excede la cantidad de aves vivas actuales.');
+                alert('ERROR DE SISTEMA: La mortalidad registrada excede la cantidad de aves vivas actuales.');
+                // Restaurar datos
                 data.current -= mortalidadPrevia;
                 data.mortalidadAcumulada += mortalidadPrevia;
                 return;
@@ -608,13 +714,13 @@
             const mortSemanalPorc = (mortalidad / avesAlInicioDeSemana) * 100;
             const mortAcumuladaPorc = (data.mortalidadAcumulada / data.initial) * 100;
 
-            // Almacenar para PDF (Incluye la cantidad acumulada de muertas)
+            // Almacenar para PDF
             datosCalculadosMortalidad = {
                 galpon,
                 semana,
                 inicial: data.initial.toLocaleString(),
                 muertasSemana: mortalidad.toLocaleString(),
-                muertasAcumuladas: data.mortalidadAcumulada.toLocaleString(), // Nuevo dato para la tabla
+                muertasAcumuladas: data.mortalidadAcumulada.toLocaleString(),
                 actual: data.current.toLocaleString(),
                 mortSemanal: mortSemanalPorc.toFixed(2),
                 mortAcumulada: mortAcumuladaPorc.toFixed(2)
@@ -640,11 +746,11 @@
             const pesoTotal = parseFloat(document.getElementById('peso_total').value);
 
             if (!galpon || galponesData[galpon] === undefined) {
-                alert('Debe seleccionar y guardar la configuración de un galpón.');
+                alert('Debe seleccionar y guardar la configuración de una unidad (galpón).');
                 return;
             }
             if (isNaN(avesPesadas) || avesPesadas <= 0 || isNaN(pesoTotal) || pesoTotal <= 0) {
-                alert('Por favor, ingrese valores válidos y mayores a cero en los campos de pesaje.');
+                alert('ERROR: Ingrese valores válidos y mayores a cero en los campos de pesaje.');
                 return;
             }
             
@@ -653,7 +759,7 @@
             const pesoEstandar = tablaEstandar[semana];
 
             if (!pesoEstandar) {
-                alert('No hay un peso estándar definido para esta semana.');
+                alert('ADVERTENCIA: No hay un peso estándar definido para esta semana.');
                 return;
             }
 
@@ -681,15 +787,18 @@
             porcentajeElement.textContent = datosCalculadosPeso.porcentaje + '%';
 
             if (porcentajeSubida >= 0) {
-                porcentajeElement.style.color = 'green';
-                porcentajeElement.textContent = '+' + porcentajeElement.textContent;
+                porcentajeElement.style.color = '#4CAF50'; // Verde Neón
+                porcentajeElement.textContent = '↑ +' + porcentajeElement.textContent;
             } else {
-                porcentajeElement.style.color = 'red';
+                porcentajeElement.style.color = '#f44336'; // Rojo de Riesgo
+                porcentajeElement.textContent = '↓ ' + porcentajeElement.textContent;
             }
 
             document.getElementById('resultados').style.display = 'block';
             document.getElementById('btn-guardar').style.display = 'inline-block';
         }
+
+        // --- FUNCIONES DE GENERACIÓN DE PDF (MODELO EXCEL/TABLA) ---
 
         // 5. Lógica para Generar PDF de Peso (USANDO AUTO TABLE)
         function generarPDFPeso() {
@@ -704,16 +813,16 @@
             let linea = 15;
 
             doc.setFontSize(16);
-            doc.text(`Reporte de Pesaje - ${farmName}`, margen, linea);
+            doc.text(`[REPORTE] ANÁLISIS DE CRECIMIENTO - ${farmName}`, margen, linea);
             linea += 7;
             doc.setFontSize(10);
-            doc.text(`Fecha del Reporte: ${new Date().toLocaleDateString()}`, margen, linea);
+            doc.text(`Fecha de Ejecución: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`, margen, linea);
             linea += 10;
             
-            // Datos para la tabla de Lote
-            const head = [['Métrica', 'Galpón', 'Semana', 'Aves Vivas']];
+            // Tabla 1: Datos de Lote
+            const head = [['Métrica', 'Unidad (Galpón)', 'Semana de Ciclo', 'Aves Vivas']];
             const body = [
-                ['Datos de Lote', data.galpon, data.semana, data.avesActuales]
+                ['DATOS DE LOTE', data.galpon, data.semana, data.avesActuales]
             ];
             
             doc.autoTable({
@@ -721,16 +830,16 @@
                 head: head,
                 body: body,
                 theme: 'grid',
-                styles: { fontSize: 10 },
-                headStyles: { fillColor: [63, 81, 181] } // Azul
+                styles: { fontSize: 10, fillColor: [22, 36, 71], textColor: [255, 255, 255] },
+                headStyles: { fillColor: [63, 81, 181] } // Azul Oscuro
             });
             linea = doc.autoTable.previous.finalY + 10;
             
-            // Datos para la tabla de resultados
-            const headResultados = [['Métrica de Peso', 'Valor (gramos)', 'Diferencia', 'Crecimiento vs. Estándar']];
+            // Tabla 2: Resultados de Pesaje
+            const headResultados = [['Métrica de Peso', 'Valor (gramos)', 'Diferencia', 'Desempeño vs. Estándar']];
             const bodyResultados = [
                 ['Peso Promedio Real', data.promedioReal, data.diferencia, data.porcentaje + '%'],
-                ['Peso Estándar Don Juan', data.estandar, '', '']
+                ['Peso Estándar Don Juan', data.estandar, 'N/A', '']
             ];
 
             doc.autoTable({
@@ -739,14 +848,14 @@
                 body: bodyResultados,
                 theme: 'striped',
                 styles: { fontSize: 10 },
-                headStyles: { fillColor: [251, 192, 45], textColor: [0, 0, 0] }, // Amarillo
+                headStyles: { fillColor: [255, 235, 59], textColor: [0, 0, 0] }, // Amarillo Neón
                 columnStyles: {
                     2: { fontStyle: 'bold', textColor: data.diferencia >= 0 ? [0, 128, 0] : [255, 0, 0] }, 
                     3: { fontStyle: 'bold', textColor: data.porcentaje >= 0 ? [0, 128, 0] : [255, 0, 0] } 
                 }
             });
 
-            const nombreArchivo = `Reporte_Pesaje_${data.galpon}_Semana_${data.semana}.pdf`;
+            const nombreArchivo = `RPT_CRECIMIENTO_${data.galpon}_S${data.semana}.pdf`;
             doc.save(nombreArchivo);
         }
 
@@ -763,14 +872,14 @@
             let linea = 15;
 
             doc.setFontSize(16);
-            doc.text(`Reporte de Mortalidad Semanal - ${farmName}`, margen, linea); 
+            doc.text(`[REPORTE] ANÁLISIS DE RIESGO Y PÉRDIDAS - ${farmName}`, margen, linea); 
             linea += 7;
             doc.setFontSize(10);
-            doc.text(`Fecha del Registro: ${new Date().toLocaleDateString()}`, margen, linea);
+            doc.text(`Fecha de Ejecución: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`, margen, linea);
             linea += 10;
 
-            // Datos para la tabla de Lote
-            const headLote = [['Galpón', 'Semana Registrada', 'Aves Iniciales']];
+            // Tabla 1: Datos de Lote
+            const headLote = [['Unidad (Galpón)', 'Semana Registrada', 'Aves Iniciales']];
             const bodyLote = [
                 [data.galpon, data.semana, data.inicial]
             ];
@@ -780,17 +889,17 @@
                 head: headLote,
                 body: bodyLote,
                 theme: 'grid',
-                styles: { fontSize: 10 },
-                headStyles: { fillColor: [220, 53, 69] } // Rojo
+                styles: { fontSize: 10, fillColor: [22, 36, 71], textColor: [255, 255, 255] },
+                headStyles: { fillColor: [244, 67, 54] } // Rojo de Riesgo
             });
             linea = doc.autoTable.previous.finalY + 10;
 
-            // Datos para la tabla de Resultados
-            const headResultados = [['Métrica', 'Cantidad', 'Porcentaje']];
+            // Tabla 2: Resultados
+            const headResultados = [['Métrica de Riesgo', 'Cantidad (Unidades)', 'Tasa (%)']];
             const bodyResultadosFinal = [
-                ['Pérdidas de la Semana', data.muertasSemana, {content: data.mortSemanal + '%', styles: {textColor: [255, 0, 0]}}],
-                ['Mortalidad Acumulada Total', data.muertasAcumuladas, {content: data.mortAcumulada + '%', styles: {textColor: [255, 0, 0]}}],
-                [{content: 'AVES VIVAS ACTUALES', colSpan: 2, styles: {fillColor: [165, 214, 167], fontStyle: 'bold', textColor: [0, 0, 0]}}, {content: data.actual, styles: {fillColor: [165, 214, 167], fontStyle: 'bold', textColor: [0, 0, 0]}}]
+                ['PÉRDIDAS SEMANAL', data.muertasSemana, {content: data.mortSemanal + '%', styles: {textColor: [255, 0, 0]}}],
+                ['PÉRDIDAS ACUMULADAS (TOTAL)', data.muertasAcumuladas, {content: data.mortAcumulada + '%', styles: {textColor: [255, 0, 0]}}],
+                [{content: 'INVENTARIO VIVO ACTUAL', colSpan: 2, styles: {fillColor: [76, 175, 80], fontStyle: 'bold', textColor: [0, 0, 0]}}, {content: data.actual, styles: {fillColor: [76, 175, 80], fontStyle: 'bold', textColor: [0, 0, 0]}}]
             ];
 
             doc.autoTable({
@@ -802,14 +911,14 @@
                 headStyles: { fillColor: [248, 249, 250], textColor: [0, 0, 0] },
             });
 
-            const nombreArchivo = `Reporte_Mortalidad_${data.galpon}_Semana_${data.semana}.pdf`;
+            const nombreArchivo = `RPT_MORTALIDAD_${data.galpon}_S${data.semana}.pdf`;
             doc.save(nombreArchivo);
         }
 
         // 7. Función para generar el Reporte COMPLETO de la Granja (USANDO AUTO TABLE)
         function generarReporteCompletoPDF() {
             if (Object.keys(galponesData).length === 0) {
-                alert('Primero debe configurar y guardar la información de al menos un galpón.');
+                alert('ERROR: Primero debe configurar y guardar la información de al menos una unidad (galpón).');
                 return;
             }
 
@@ -820,7 +929,7 @@
             // --- ENCABEZADO PRINCIPAL ---
             doc.setFontSize(18);
             doc.setFont(undefined, 'bold');
-            doc.text(`REPORTE DE PRODUCCIÓN COMPLETO - ${farmName}`, margen, linea);
+            doc.text(`[REPORTE GLOBAL] ESTADO DEL SISTEMA - ${farmName}`, margen, linea);
             linea += 10;
             doc.setFontSize(10);
             doc.setFont(undefined, 'normal');
@@ -830,17 +939,19 @@
             // --- RESUMEN POR GALPÓN ---
             doc.setFontSize(14);
             doc.setFont(undefined, 'bold');
-            doc.text('RESUMEN DE ESTADO DE GALPONES:', margen, linea);
+            doc.text('ESTADO DE INVENTARIO Y PÉRDIDAS POR UNIDAD:', margen, linea);
             
             const headGalpones = [
-                ['Galpón', 'Aves Iniciales', 'Mortalidad Acum.', 'Mortalidad %', 'Aves Vivas Actuales']
+                ['Unidad (ID)', 'Aves Iniciales', 'Mortalidad Acum.', 'Tasa % (Riesgo)', 'Aves Vivas Actuales']
             ];
             
             const bodyGalpones = [];
+            let totalAvesVivas = 0;
 
             for (const galponID in galponesData) {
                 const data = galponesData[galponID];
                 const mortPorc = (data.mortalidadAcumulada / data.initial) * 100;
+                totalAvesVivas += data.current;
                 
                 const historiaMort = Object.entries(data.mortalidadHistory)
                                             .map(([semana, muertas]) => `S${semana}: ${muertas.toLocaleString()}`)
@@ -858,6 +969,13 @@
                     { content: `Historial Semanal: ${historiaMort || '(No hay registros)'}`, colSpan: 5, styles: { fontStyle: 'italic', fontSize: 8, fillColor: [240, 240, 240] } }
                 ]);
             }
+            
+            // Fila de total
+            bodyGalpones.push([
+                {content: 'TOTAL VIVO EN GRANJA', colSpan: 4, styles: {fontStyle: 'bold', fillColor: [189, 189, 189], halign: 'right'}},
+                {content: totalAvesVivas.toLocaleString(), styles: {fontStyle: 'bold', textColor: [0, 128, 0], fillColor: [189, 189, 189]}}
+            ]);
+
 
             doc.autoTable({
                 startY: linea + 5,
@@ -865,7 +983,7 @@
                 body: bodyGalpones,
                 theme: 'grid',
                 styles: { fontSize: 10, cellPadding: 2 },
-                headStyles: { fillColor: [56, 142, 60] } // Verde avícola
+                headStyles: { fillColor: [56, 142, 60], textColor: [255, 255, 255] } // Verde Avícola
             });
             linea = doc.autoTable.previous.finalY + 10;
 
@@ -877,16 +995,16 @@
 
             doc.setFontSize(14);
             doc.setFont(undefined, 'bold');
-            doc.text('RESUMEN DE ÚLTIMOS CÁLCULOS (Referenciales):', margen, linea);
+            doc.text('RESUMEN DE ÚLTIMOS REGISTROS:', margen, linea);
             
             const headCalculos = [
-                ['Reporte', 'Galpón', 'Semana', 'Métrica 1', 'Métrica 2']
+                ['Tipo de Reporte', 'Unidad', 'Semana', 'Métrica 1', 'Métrica 2']
             ];
             const bodyCalculos = [];
 
             if (Object.keys(datosCalculadosPeso).length > 0) {
                 bodyCalculos.push([
-                    {content: 'ÚLTIMO PESO', styles: {fontStyle: 'bold'}},
+                    {content: 'PESO (CRECIMIENTO)', styles: {fontStyle: 'bold'}},
                     datosCalculadosPeso.galpon,
                     datosCalculadosPeso.semana,
                     `P. Real: ${datosCalculadosPeso.promedioReal}g`,
@@ -894,14 +1012,14 @@
                 ]);
             } else {
                 bodyCalculos.push([
-                    {content: 'ÚLTIMO PESO', styles: {fontStyle: 'bold'}},
-                    {content: 'No hay cálculo de peso reciente guardado.', colSpan: 4, styles: {fontStyle: 'italic'}}
+                    {content: 'PESO (CRECIMIENTO)', styles: {fontStyle: 'bold'}},
+                    {content: 'No hay cálculo de peso reciente registrado.', colSpan: 4, styles: {fontStyle: 'italic'}}
                 ]);
             }
 
             if (Object.keys(datosCalculadosMortalidad).length > 0) {
                 bodyCalculos.push([
-                    {content: 'ÚLTIMA MORTALIDAD', styles: {fontStyle: 'bold'}},
+                    {content: 'MORTALIDAD (RIESGO)', styles: {fontStyle: 'bold'}},
                     datosCalculadosMortalidad.galpon,
                     datosCalculadosMortalidad.semana,
                     `Semanal: ${datosCalculadosMortalidad.mortSemanal}%`,
@@ -909,7 +1027,7 @@
                 ]);
             } else {
                 bodyCalculos.push([
-                    {content: 'ÚLTIMA MORTALIDAD', styles: {fontStyle: 'bold'}},
+                    {content: 'MORTALIDAD (RIESGO)', styles: {fontStyle: 'bold'}},
                     {content: 'No hay registro de mortalidad reciente guardado.', colSpan: 4, styles: {fontStyle: 'italic'}}
                 ]);
             }
@@ -923,7 +1041,7 @@
                 headStyles: { fillColor: [150, 150, 150] }
             });
 
-            const nombreArchivo = `Reporte_Completo_${farmName.replace(/ /g, '_')}_${new Date().toLocaleDateString().replace(/\//g, '-')}.pdf`;
+            const nombreArchivo = `RPT_GLOBAL_${farmName.replace(/ /g, '_')}_${new Date().toLocaleDateString().replace(/\//g, '-')}.pdf`;
             doc.save(nombreArchivo);
         }
     </script>
